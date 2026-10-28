@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoiseShield — Live Voice Call Studio (DeepFilterNet3)</title>
+    <link rel="stylesheet" href="/static/style.css?v=10">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="22"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1>NoiseShield</h1>
+                    <span class="subtitle">DeepFilterNet3 48 kHz AI Voice Studio</span>
+                </div>
+            </div>
+
+            <div id="user-profile-header" class="user-profile-header hidden">
+                <button id="open-qr-btn" class="btn btn-secondary btn-sm" title="Connect Phone / Mobile Device">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                    </svg>
+                    Connect Phone
+                </button>
+                <button id="open-mic-test-btn" class="btn btn-secondary btn-sm" title="Pre-Call Microphone & Noise Test">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="22"></line>
+                    </svg>
+                    Test Mic
+                </button>
+                <div class="profile-info">
+                    <span id="user-display-name" class="profile-name">User</span>
+                    <span id="user-display-email" class="profile-email">email@gmail.com</span>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary btn-sm">Log Out</button>
+            </div>
+        </header>
+
+        <!-- SCREEN 1: LOGIN -->
+        <section id="login-section" class="card login-card">
+            <div class="card-header">
+                <h2>Sign In to NoiseShield</h2>
+                <p>Authenticate with your identity to make and receive DeepFilterNet AI noise-suppressed calls.</p>
+            </div>
+
+            <div class="login-options">
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="input-email">Your Gmail / Email Address</label>
+                        <input type="email" id="input-email" placeholder="example@gmail.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="input-name">Your Full Name</label>
+                        <input type="text" id="input-name" placeholder="John Doe" required autocomplete="name">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                            <polyline points="10 17 15 12 10 7"></polyline>
+                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                        </svg>
+                        Sign In with Identity
+                    </button>
+                </form>
+
+                <div class="login-divider"><span>OR QUICK TEST PRESETS</span></div>
+
+                <div class="preset-buttons">
+                    <button id="preset-user-a" type="button" class="btn btn-preset">
+                        <span class="preset-avatar">A</span>
+                        <span>Sign In as <strong>User A</strong> (alice@gmail.com)</span>
+                    </button>
+                    <button id="preset-user-b" type="button" class="btn btn-preset">
+                        <span class="preset-avatar">B</span>
+                        <span>Sign In as <strong>User B</strong> (bob@gmail.com)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: MAIN DASHBOARD -->
+        <section id="dashboard-section" class="dashboard-grid hidden">
+            <div class="main-column">
+                <!-- Top Mode Navigation Bar -->
+                <div class="mode-navigation-bar">
+                    <button id="nav-btn-link-code" class="mode-nav-btn active" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <span>Call by Link / Code</span>
+                    </button>
+                    <button id="nav-btn-directory" class="mode-nav-btn" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Call Directory</span>
+                    </button>
+                    <button id="nav-btn-history" class="mode-nav-btn" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 14 14"></polyline>
+                        </svg>
+                        <span>Recent Calls</span>
+                    </button>
+                </div>
+
+                <!-- PAGE 1: CALL BY LINK / CODE -->
+                <div id="view-link-code" class="card mode-view-card">
+                    <!-- Sub-tabs: Make a Call (Send) vs Join a Call (Retrieve) -->
+                    <div class="sub-pill-container">
+                        <button id="subtab-make-call" class="sub-pill-btn active" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="19" x2="12" y2="5"></line>
+                                <polyline points="5 12 12 5 19 12"></polyline>
+                            </svg>
+                            <span>Make a Call</span>
+                        </button>
+                        <button id="subtab-join-call" class="sub-pill-btn" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <polyline points="19 12 12 19 5 12"></polyline>
+                            </svg>
+                            <span>Join a Call</span>
+                        </button>
+                    </div>
+
+                    <!-- Panel 1a: Make a Call (Host) -->
+                    <div id="panel-make-call" class="sub-panel-box">
+                        <div class="panel-intro">
+                            <h3>Create Private Call Room</h3>
+                            <p>Generate a temporary 6-digit room PIN with DeepFilterNet full-band audio filtering.</p>
+                        </div>
+                        <div class="make-call-action-box">
+                            <button id="create-room-btn" class="btn btn-primary btn-lg" type="button">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Generate 6-Digit Code
+                            </button>
+
+                            <div id="room-created-display" class="room-created-display hidden">
+                                <span class="pin-header-text">Your Temporary Call PIN</span>
+                                <div class="pin-badge" id="display-room-pin">------</div>
+                                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                    <button id="copy-room-link-btn" class="btn btn-secondary btn-copy-link" type="button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                        </svg>
+                                        Copy Shareable Link
+                                    </button>
+                                    <button id="enter-hosted-room-btn" class="btn btn-primary btn-copy-link" type="button">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                            <polyline points="10 17 15 12 10 7"></polyline>
+                                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                                        </svg>
+                                        Enter Call Studio
+                                    </button>
+                                </div>
+                                <span class="room-waiting-pulse">Waiting for partner to join or tap Enter Studio...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel 1b: Join a Call (Guest) -->
+                    <div id="panel-join-call" class="sub-panel-box hidden">
+                        <div class="join-field-container">
+                            <div class="join-label-header">
+                                <span class="join-label-main">Retrieval code</span>
+                                <span class="join-label-sub">6-digit PIN or room code you received</span>
+                            </div>
+                            <div class="join-input-wrapper">
+                                <input type="text" id="input-room-pin" class="join-input-huge" placeholder="e.g. 543210" maxlength="32" autocomplete="off" spellcheck="false">
+                            </div>
+                            <div class="join-btn-row">
+                                <button id="join-room-btn" class="btn btn-retrieve-accent" type="button">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <polyline points="19 12 12 19 5 12"></polyline>
+                                    </svg>
+                                    Join Call
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 2: CALL DIRECTORY -->
+                <div id="view-directory" class="card directory-card hidden">
+                    <div class="card-header flex-between">
+                        <div>
+                            <h2>NoiseShield Directory</h2>
+                            <p>Call registered users directly with real-time online status</p>
+                        </div>
+                        <button id="refresh-users-btn" class="btn btn-icon" title="Refresh User List" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text" id="search-user" placeholder="Search by Gmail or Name..." autocomplete="off">
+                    </div>
+
+                    <div id="users-list" class="users-list">
+                        <div class="loading-spinner">Loading users...</div>
+                    </div>
+                </div>
+
+                <!-- PAGE 3: RECENT CALL HISTORY -->
+                <div id="view-history" class="card history-card hidden">
+                    <div class="card-header flex-between">
+                        <div>
+                            <h2>Call History</h2>
+                            <p>Recent incoming and outgoing voice calls</p>
+                        </div>
+                        <div class="header-actions" style="display: flex; gap: 8px;">
+                            <button id="clear-history-btn" class="btn btn-secondary btn-sm" title="Clear Call History" type="button">
+                                Clear
+                            </button>
+                            <button id="refresh-history-btn" class="btn btn-icon" title="Refresh History" type="button">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="history-filter-bar">
+                        <button id="filter-all-calls" class="history-filter-btn active" type="button">All Calls</button>
+                        <button id="filter-missed-calls" class="history-filter-btn" type="button">Missed</button>
+                    </div>
+
+                    <div id="history-list" class="history-list">
+                        <div class="loading-spinner">Loading call records...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: ACTIVE CALL OVERLAY -->
+        <div id="call-overlay" class="call-overlay hidden">
+            <div class="call-card card">
+                <div class="call-header">
+                    <div class="calling-pulse">
+                        <div class="avatar-lg" id="call-avatar">U</div>
+                    </div>
+                    <h2 id="call-peer-name">User Name</h2>
+                    <p id="call-peer-email" class="call-email">user@gmail.com</p>
+                    <div id="call-timer" class="call-timer">00:00</div>
+                    <div style="margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span id="call-connection-badge" class="badge badge-warning" style="font-size: 0.72rem; padding: 2px 8px;">Connecting...</span>
+                    </div>
+                    <div id="audio-tap-hint" style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px; cursor: pointer;">
+                        🔊 Tap anywhere if audio is quiet
+                    </div>
+                </div>
+
+                <!-- Visualizer Waveform Canvas -->
+                <div class="visualizer-container">
+                    <canvas id="audio-visualizer" width="400" height="80"></canvas>
+                    <div class="visualizer-legend">
+                        <span id="visualizer-legend-title">Live 48 kHz Waveform</span>
+                        <span id="noise-shield-badge" class="badge badge-ai">DeepFilterNet ON</span>
+                    </div>
+                </div>
+
+                <!-- Live Quantitative AI Metrics Strip -->
+                <div class="call-metrics-strip">
+                    <div class="call-metric-item">
+                        <span class="metric-number" id="metric-snr">+8.4 dB</span>
+                        <span class="metric-title">SNR Boost</span>
+                    </div>
+                    <div class="call-metric-item">
+                        <span class="metric-number" id="metric-noise">-19.2 dB</span>
+                        <span class="metric-title">Noise Cut</span>
+                    </div>
+                    <div class="call-metric-item">
+                        <span class="metric-number" id="metric-latency">16.4 ms</span>
+                        <span class="metric-title">AI Latency</span>
+                    </div>
+                </div>
+
+                <!-- Live Audio Level Meter Bars -->
+                <div style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin: 4px 0;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary);">
+                        <span>Your Mic</span>
+                        <span id="local-db-text">-∞ dB</span>
+                    </div>
+                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden;">
+                        <div id="local-audio-bar" style="height: 100%; width: 0%; background: #3b82f6; border-radius: 4px; transition: width 0.05s ease;"></div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">
+                        <span>Peer Audio</span>
+                        <span id="peer-db-text">-∞ dB</span>
+                    </div>
+                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden;">
+                        <div id="peer-audio-bar" style="height: 100%; width: 0%; background: #10b981; border-radius: 4px; transition: width 0.05s ease;"></div>
+                    </div>
+                </div>
+
+                <!-- In-Call Controls -->
+                <div class="call-controls">
+                    <button id="toggle-mute-btn" class="btn btn-control" title="Mute / Unmute" type="button">
+                        <svg id="mic-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="22"></line>
+                        </svg>
+                        <span>Mute</span>
+                    </button>
+
+                    <button id="toggle-shield-btn" class="btn btn-control btn-shield active" title="Toggle AI Noise Suppression" type="button">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>AI Shield</span>
+                    </button>
+
+                    <button id="end-call-btn" class="btn btn-control btn-hangup" title="End Call" type="button">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-6-6 19.8 19.8 0 0 1-3.12-8.68A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"></path>
+                            <line x1="23" y1="1" x2="1" y2="23"></line>
+                        </svg>
+                        <span>End</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- INCOMING CALL POPUP MODAL -->
+        <div id="incoming-modal" class="modal-backdrop hidden">
+            <div class="incoming-card card">
+                <div class="incoming-pulse">
+                    <div class="avatar-lg" id="incoming-avatar">U</div>
+                </div>
+                <h3>Incoming Voice Call</h3>
+                <h2 id="incoming-caller-name">Caller Name</h2>
+                <p id="incoming-caller-email">caller@gmail.com</p>
+
+                <div class="incoming-actions">
+                    <button id="decline-call-btn" class="btn btn-hangup btn-action" type="button">
+                        Decline
+                    </button>
+                    <button id="accept-call-btn" class="btn btn-accept btn-action" type="button">
+                        Accept
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRE-CALL MICROPHONE DIAGNOSTICS MODAL -->
+        <div id="mic-test-modal" class="modal-backdrop hidden">
+            <div class="mic-test-card card">
+                <div class="modal-header flex-between">
+                    <div>
+                        <h2>Microphone & Audio Check</h2>
+                        <p>Verify your voice quality, background noise floor, and AI latency before calling</p>
+                    </div>
+                    <button id="close-mic-test-btn" class="btn btn-icon" title="Close" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="mic-test-body">
+                    <div class="form-group">
+                        <label for="mic-device-select">Input Audio Device</label>
+                        <select id="mic-device-select" class="custom-select">
+                            <option value="">Default Microphone</option>
+                        </select>
+                    </div>
+
+                    <!-- Live VU Audio Level Meter -->
+                    <div class="vu-meter-wrap">
+                        <div class="vu-meter-header">
+                            <span>Input Audio Level</span>
+                            <span id="vu-level-text">0%</span>
+                        </div>
+                        <div class="vu-meter-track">
+                            <div id="vu-meter-bar" class="vu-meter-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Noise Diagnostics Specs -->
+                    <div class="mic-specs-grid">
+                        <div class="mic-spec-box">
+                            <span class="spec-label">Sample Rate</span>
+                            <span class="spec-val" id="spec-sample-rate">48,000 Hz</span>
+                        </div>
+                        <div class="mic-spec-box">
+                            <span class="spec-label">Noise Floor</span>
+                            <span class="spec-val" id="spec-noise-floor">-42 dB (Low)</span>
+                        </div>
+                        <div class="mic-spec-box">
+                            <span class="spec-label">Audio Clarity</span>
+                            <span class="spec-val" id="spec-clarity">Ready for Call</span>
+                        </div>
+                    </div>
+
+                    <!-- 3-Second Record & Playback Test -->
+                    <div class="mic-playback-action">
+                        <button id="record-test-mic-btn" class="btn btn-primary btn-block" type="button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                            </svg>
+                            Record 3s Mic Test
+                        </button>
+                        <audio id="test-playback-audio" controls class="test-playback hidden"></audio>
+                    </div>
+
+                    <!-- Server-Side DeepFilterNet AI Engine Diagnostic -->
+                    <div class="onnx-engine-box">
+                        <div class="onnx-engine-header">
+                            <div>
+                                <span class="onnx-engine-title">DeepFilterNet3 Neural Engine</span>
+                                <span class="badge badge-ai" id="onnx-status-badge">PyTorch CPU</span>
+                            </div>
+                            <button id="run-onnx-bench-btn" class="btn btn-secondary btn-sm" type="button">
+                                ⚡ Run AI Benchmark
+                            </button>
+                        </div>
+                        <div class="onnx-stats-grid">
+                            <div class="onnx-stat-item">
+                                <span class="stat-label">Model Architecture</span>
+                                <span class="stat-value">DeepFilterNet3 (ERB+DCF)</span>
+                            </div>
+                            <div class="onnx-stat-item">
+                                <span class="stat-label">Frame Budget</span>
+                                <span class="stat-value">40.0 ms @ 48 kHz</span>
+                            </div>
+                            <div class="onnx-stat-item">
+                                <span class="stat-label">Inference Latency</span>
+                                <span class="stat-value" id="onnx-bench-latency">Ready to test</span>
+                            </div>
+                            <div class="onnx-stat-item">
+                                <span class="stat-label">Real-Time Factor (RTF)</span>
+                                <span class="stat-value" id="onnx-bench-ep">Ready to test</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOBILE LAN / QR CODE MODAL -->
+        <div id="mobile-qr-modal" class="modal-backdrop hidden">
+            <div class="card" style="max-width: 480px; text-align: center; padding: 24px;">
+                <div class="modal-header flex-between" style="text-align: left; margin-bottom: 16px;">
+                    <div>
+                        <h2 style="font-size: 1.25rem; margin: 0;">Connect Mobile Phone</h2>
+                        <p style="font-size: 0.8rem; margin: 0; color: var(--text-secondary);">Cross-Device Voice Calling</p>
+                    </div>
+                    <button id="close-qr-btn" class="btn btn-icon" title="Close" type="button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Dual Mode Navigation -->
+                <div class="subtabs-bar" style="margin-bottom: 16px; display: flex; gap: 8px;">
+                    <button id="tab-qr-tunnel" class="subtab-btn active" type="button" style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(59, 130, 246, 0.2); color: #60a5fa; cursor: pointer; font-size: 0.8rem; font-weight: 600;">
+                        🌐 Online Link (Tunnel)
+                    </button>
+                    <button id="tab-qr-hotspot" class="subtab-btn" type="button" style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card-subtle); color: var(--text-secondary); cursor: pointer; font-size: 0.8rem; font-weight: 600;">
+                        📱 Local LAN / Wi-Fi
+                    </button>
+                </div>
+                
+                <div style="background: #fff; padding: 14px; border-radius: 12px; display: inline-block; margin: 6px auto;">
+                    <img id="qr-modal-img" src="/api/qr?data=http://localhost:8001" alt="Scan to connect phone" style="width: 200px; height: 200px; display: block;">
+                </div>
+                
+                <div style="margin-top: 14px; background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 14px;">
+                    <span id="qr-url-label" style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 600;">Phone Connection Link</span>
+                    <a id="qr-modal-link" href="#" target="_blank" style="font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: #60a5fa; text-decoration: none; font-weight: bold; word-break: break-all;">
+                        http://localhost:8001
+                    </a>
+                </div>
+
+                <div id="qr-instruction-box" style="text-align: left; margin-top: 16px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; padding: 12px; font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary);">
+                    <strong style="color: #fff;">Mobile Voice Calling:</strong><br>
+                    • Open the link or scan the QR code on your phone (Safari or Chrome).<br>
+                    • Use headphones on both devices to prevent acoustic feedback.<br>
+                    • Real-time speech enhancement is processed automatically on the server!
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Audio Element for Remote Audio Playback -->
+        <audio id="remote-audio" autoplay playsinline webkit-playsinline></audio>
+
+        <!-- Toast Notifications Container -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <script src="/static/app.js?v=12"></script>
+</body>
+</html>

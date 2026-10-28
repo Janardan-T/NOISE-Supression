@@ -1,0 +1,35 @@
+# ==============================================================================
+# Background Noise Suppression - Project Dependencies
+# ==============================================================================
+# Python version: 3.11.x (tested on 3.11.9)
+# PyTorch: CPU-only build (torch==2.0.1+cpu, torchaudio==2.0.2+cpu)
+#
+# To install core packages from scratch in a fresh venv:
+#   pip install torch==2.0.1 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+# ==============================================================================
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.0.1+cpu
+torchaudio==2.0.2+cpu
+DeepFilterNet==0.5.6
+DeepFilterLib==0.5.6
+numpy==1.26.4
+scipy==1.17.1
+matplotlib==3.11.2
+soundfile==0.14.0
+gradio==6.30.0
+pesq==0.0.4
+pystoi==0.4.1
+
+# Supporting dependencies
+fastapi==0.146.0
+uvicorn==0.54.0
+pydantic==2.14.1
+pydub==0.25.1
+loguru==0.7.3
+requests==2.34.2
+pillow==12.3.0
+sounddevice==0.5.6
+websockets==17.2

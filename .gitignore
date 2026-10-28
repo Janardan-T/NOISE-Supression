@@ -1,0 +1,48 @@
+# Virtual Environment
+venv/
+venv*/
+scratch_*/
+.env
+
+# Python bytecode and caches
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+
+# Large generated audio and image outputs
+# (Markdown and CSV summaries in outputs/ are preserved)
+outputs/*.wav
+outputs/*.png
+outputs/*.mp3
+outputs/*.flac
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# User voice recordings (Privacy Protection)
+samples/real_*.wav
+samples/real_clean_speech_48k.wav
+samples/test_babble.wav
+
+# Binary executables and tools
+*.exe
+cloudflared.exe
+tools/
+
+# Certificates and private keys
+certs/
+*.pem
+*.key
+
+# Database and SQLite
+*.db
+*.sqlite3
+
+# Logs and temporary files
+*.log
+*.tmp
+terminalcode.txt

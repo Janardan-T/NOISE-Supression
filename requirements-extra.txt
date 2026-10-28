@@ -1,0 +1,10 @@
+# ==============================================================================
+# Additional Evaluation & Benchmark Dependencies (requirements-extra.txt)
+# Used for DNSMOS objective assessment, dataset streaming, and parquet decompression.
+# Note: pyarrow is NOT used to maintain NumPy 1.26.4 compatibility.
+# ==============================================================================
+
+speechmos==0.0.1.1
+onnxruntime==1.31.0
+fastparquet==2026.9.0
+huggingface_hub==2.2.0
